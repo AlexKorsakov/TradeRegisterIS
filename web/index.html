@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TODO supply a title</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <link rel="stylesheet" href="style.css">
+        <script type="text/javascript">
+            function show()  
+            {
+                $.ajax({  
+                    url: "/WebApplication1/servlet",  
+                    cache: false,  
+                    success: function(html){  
+                        $("#text").html(html);  
+                    }  
+                });  
+            }
+
+            function AjaxFormRequest(result_id, form_id, url) {
+                $.ajax({
+                    url:        url, //Адрес подгружаемой страницы
+                    type:       "POST", //Тип запроса
+                    dataType:   "html", //Тип данных
+                    data:       $("#"+form_id).serialize(),                     
+                    success: function(response) { //Если все нормально
+                        document.getElementById(result_id).innerHTML = response;
+                        $(".subject_str").bind("click", function() {
+                                console.log("asd")
+                            });
+                    },
+                    error: function(response) { //Если ошибка
+                    document.getElementById(result_id).innerHTML = "Ошибка при отправке формы";
+                    }
+                });
+            }
+            $(document).ready(function(){  
+                //show();  
+                //setInterval('show()',1000);   
+                $("#frm").submit(function(event){
+                    AjaxFormRequest('text', 'frm', '/WebApplication1/servlet');
+                    event.stopImmediatePropagation();
+                    event.preventDefault();
+                }); 
+            });
+
+        </script>
+    </head>
+    <body>
+        <div class="content">
+            <table>
+                <tr>
+                    <td>dfsf</td>
+                </tr>
+            </table>
+            <form id="frm" method="POST" action="javascript: void(0);" />
+                <input type="text" name="username" />
+                <input type="hidden" name="sdelat_pezdato" value="1"/>
+                <input type="submit" value="Отправить"/>
+            </form>
+            <div id="text"></div>
+        </div>
+    </body>
+</html>
+

@@ -1,5 +1,4 @@
 package student.web;
-
 import java.sql.*;
 import com.mysql.jdbc.MySQLConnection;
 import com.mysql.*;
@@ -27,35 +26,49 @@ public class servlet extends HttpServlet {
     protected void Responce(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter())        //уходит на страницу
+        try (PrintWriter out = response.getWriter()) //уходит на страницу
         {
-            //String username = (String) request.getParameter("username");      //перехват параметров
+            String WhereSQL = "where "
+                    + "name_subject Like '%"+     (String)request.getParameter("f-subject") +"%' "
+                    + "and name_subject Like '%"+ (String)request.getParameter("f-object") +"%' "
+                    + "and name_subject Like '%"+ (String)request.getParameter("f-okrug") +"%' "
+                    + "and name_subject Like '%"+ (String)request.getParameter("f-type_sub") +"%' "
+                    + "and name_subject Like '%"+ (String)request.getParameter("f-name_list") +"%' "
+                    + "and name_subject Like '%"+ (String)request.getParameter("f-name_type_trade") +"%' "
+                    + "and name_subject Like '%"+ (String)request.getParameter("f-ur-f") +"%'";
+            
+            String username = (String) request.getParameter("f-subject");      //перехват параметров
             //sdelat_pezdato
-            ResultSet rs = DBRequest("SELECT id_list_assort, name_subject, name_object, okrug, name_type_subject, name_list, name_type_trade, U_F FROM the_best_pred");            
+            ResultSet rs = DBRequest("SELECT id_list_assort, name_subject, name_object, okrug, "
+                    + "name_type_subject, name_list, name_type_trade, U_F FROM the_best_pred "+WhereSQL);
             StringBuffer sb = new StringBuffer();
             sb.append("<table id='user' >");
             int columns = rs.getMetaData().getColumnCount();
             // Перебор строк с данными
-            while(rs.next()){
-                sb.append("<tr id='list_assort-"+rs.getString("id_list_assort")+"' class='subject_str'>");                
+            sb.append("<tr><th>ИД</th><th>Название</th><th>Объект</th><th>Округ</th><th>Тип</th>"
+                    + "<th>Спеиализация</th><th>Тип торговли</th><th>Юр. лицо</th>");
+            out.println();
+            sb.append("</tr>");
+
+            while (rs.next()) {
+                sb.append("<tr id='list_assort-" + rs.getString("id_list_assort") + "' class='subject_str'>");
                 for (int i = 1; i <= columns; i++) {
-                    sb.append("<td>"); 
-                    sb.append(rs.getString(i)); 
-                    sb.append("</td>"); 
+                    sb.append("<td>");
+                    sb.append(rs.getString(i));
+                    sb.append("</td>");
                 }
                 out.println();
-                sb.append("</tr>"); 
+                sb.append("</tr>");
             }
             sb.append("</table>");
             out.println(sb);
-        }
-        catch(Exception ex){
-            ex.printStackTrace();                
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
     
     //Селективный запрос к базе
-    protected ResultSet DBRequest(String querytext){
+    protected ResultSet DBRequest(String querytext) {
         ResultSet result = null;
         try
         {       
@@ -74,6 +87,7 @@ public class servlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String username = (String) request.getParameter("f-subject"); 
         Responce(request, response);
     }
 

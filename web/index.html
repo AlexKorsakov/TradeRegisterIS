@@ -13,60 +13,88 @@ and open the template in the editor.
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
         <link rel="stylesheet" href="style.css">
         <script type="text/javascript">
-            function show()  
-            {
-                $.ajax({  
-                    url: "/WebApplication1/servlet",  
-                    cache: false,  
-                    success: function(html){  
-                        $("#text").html(html);  
-                    }  
-                });  
+            function show() {
+                $.ajax({
+                    url: "/WebApplication1/servlet",
+                    cache: false,
+                    success: function (html) {
+                        $("#text").html(html);
+                    }
+                });
             }
 
             function AjaxFormRequest(result_id, form_id, url) {
                 $.ajax({
-                    url:        url, //Адрес подгружаемой страницы
-                    type:       "POST", //Тип запроса
-                    dataType:   "html", //Тип данных
-                    data:       $("#"+form_id).serialize(),                     
-                    success: function(response) { //Если все нормально
-                        document.getElementById(result_id).innerHTML = response;
-                        $(".subject_str").bind("click", function() {
-                                console.log("asd")
-                            });
+                    url: url, //Адрес подгружаемой страницы
+                    type: "POST", //Тип запроса
+                    dataType: "html", //Тип данных
+                    data: $("#" + form_id).serialize(),
+                    cache: false,
+                    success: function (response) { //Если все нормально
+                        $("."+result_id).html(response);
+                        $(".subject_str").bind("click", function () {
+                            console.log("asd")
+                        });
                     },
-                    error: function(response) { //Если ошибка
-                    document.getElementById(result_id).innerHTML = "Ошибка при отправке формы";
+                    error: function (response) { //Если ошибка
+                        document.getElementById(result_id).innerHTML = "Ошибка при отправке формы";
                     }
                 });
             }
-            $(document).ready(function(){  
+            $(document).ready(function () {
                 //show();  
                 //setInterval('show()',1000);   
-                $("#frm").submit(function(event){
-                    AjaxFormRequest('text', 'frm', '/WebApplication1/servlet');
-                    event.stopImmediatePropagation();
-                    event.preventDefault();
-                }); 
+                $("#filter").submit(function (event) {
+                    AjaxFormRequest('infotable', 'filter', '/WebApplication1/servlet');
+                    //event.stopImmediatePropagation();
+                    //event.preventDefault();
+                });
             });
-
         </script>
     </head>
     <body>
-        <div class="content">
-            <table>
-                <tr>
-                    <td>dfsf</td>
-                </tr>
-            </table>
-            <form id="frm" method="POST" action="javascript: void(0);" />
-                <input type="text" name="username" />
-                <input type="hidden" name="sdelat_pezdato" value="1"/>
-                <input type="submit" value="Отправить"/>
+    <div class="content">
+        <div class="filter">
+            <form id="filter" method="POST" action="javascript: void(0);" >
+                <table>
+                    <tr>
+                        <td>
+                            <label>Субъект</label>
+                            <input type="text" name="f-subject" />
+                        </td>
+                        <td>
+                            <label>Объект</label>
+                            <input type="text" name="f-object" />
+                        </td>
+                        <td>
+                            <label>Округ</label>
+                            <input type="text" name="f-okrug" />
+                        </td>
+                        <td>
+                            <label>Тип субъекта</label>
+                            <input type="text" name="f-type_sub" />
+                        </td>
+                        <td>
+                            <label>Специализация</label>
+                        <input type="text" name="f-name_list" />
+                        </td>
+                        <td>
+                            <label>Тип торговли</label>
+                            <input type="text" name="f-name_type_trade" />
+                        </td>
+                        <td>
+                            <label>Юр. лицо</label>
+                            <input type="text" name="f-ur-f" />
+                        </td>
+                    </tr>
+                </table>
+                <input type="submit" value="Фильтровать"/>
             </form>
-            <div id="text"></div>
         </div>
-    </body>
+        <div class="infotable">
+            
+        </div>
+    </div>
+</body>
 </html>
 
